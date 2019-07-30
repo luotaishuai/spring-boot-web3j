@@ -1,6 +1,6 @@
 # Web3j Spring Boot Starter
 
-####From [https://github.com/web3j/web3j-spring-boot-starter](https://github.com/web3j/web3j-spring-boot-starter)
+#### From [https://github.com/web3j/web3j-spring-boot-starter](https://github.com/web3j/web3j-spring-boot-starter)
 
 [![Build Status](https://travis-ci.org/web3j/web3j-spring-boot-starter.svg?branch=master)](https://travis-ci.org/web3j/web3j-spring-boot-starter)
 
@@ -49,10 +49,12 @@ public String createWallet(){
 ```
 ERC20代币交易
 ```java
-private static final BigInteger GAS_PRICE = new BigInteger("21");
-private static final BigInteger GAS_LIMIT = new BigInteger("7000000");
 public String transfer(){
+    BigInteger gasPrice = new BigInteger("21");
+    BigInteger gasLimit = new BigInteger("7000000");
+    
     Credentials credentials = WalletUtils.loadCredentials("password", walletFile or walletJson);
+    
     String from = credentials.getAddress();
     EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(from, DefaultBlockParameterName.LATEST).sendAsync().get();
     BigInteger nonce = ethGetTransactionCount.getTransactionCount();
@@ -62,9 +64,10 @@ public String transfer(){
     intputParameters.add(address);
     parametersList.add(value);
     List<TypeReference<?>> outputParameters = new ArrayList<>();
+    
     Function function = new Function("transfer", intputParameters, outputParameters);
     String encoder = FunctionEncoder.encode(function);
-    RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, GAS_PRICE, GAS_LIMIT, contract, encoder);
+    RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLImit, contract, encoder);
     byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
     String hex = Numeric.toHexString(signedMessage); 
     return web3j.ethSendRawTransaction(hex).sendAsync().get().getTransactionHash();
